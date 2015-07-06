@@ -1,0 +1,176 @@
+diff -u -p --recursive a/pyfits-3.3/setup.cfg b/pyfits-3.3/setup.cfg
+--- setup.cfg	2014-07-17 14:36:07.000000000 -0400
++++ setup.cfg	2015-07-05 19:25:45.313176685 -0400
+@@ -35,101 +35,29 @@ scripts =
+ 	scripts/fitscheck
+ 	scripts/fitsdiff
+ 
+-[extension=pyfits.compression]
+-sources = 
+-	cextern/cfitsio/adler32.c
+-	cextern/cfitsio/buffers.c
+-	cextern/cfitsio/cfileio.c
+-	cextern/cfitsio/checksum.c
+-	cextern/cfitsio/crc32.c
+-	cextern/cfitsio/deflate.c
+-	cextern/cfitsio/drvrfile.c
+-	cextern/cfitsio/drvrgsiftp.c
+-	cextern/cfitsio/drvrmem.c
+-	cextern/cfitsio/drvrnet.c
+-	cextern/cfitsio/drvrsmem.c
+-	cextern/cfitsio/editcol.c
+-	cextern/cfitsio/edithdu.c
+-	cextern/cfitsio/eval_f.c
+-	cextern/cfitsio/eval_l.c
+-	cextern/cfitsio/eval_y.c
+-	cextern/cfitsio/fitscore.c
+-	cextern/cfitsio/fits_hcompress.c
+-	cextern/cfitsio/fits_hdecompress.c
+-	cextern/cfitsio/getcolb.c
+-	cextern/cfitsio/getcol.c
+-	cextern/cfitsio/getcold.c
+-	cextern/cfitsio/getcole.c
+-	cextern/cfitsio/getcoli.c
+-	cextern/cfitsio/getcolj.c
+-	cextern/cfitsio/getcolk.c
+-	cextern/cfitsio/getcoll.c
+-	cextern/cfitsio/getcolsb.c
+-	cextern/cfitsio/getcols.c
+-	cextern/cfitsio/getcolui.c
+-	cextern/cfitsio/getcoluj.c
+-	cextern/cfitsio/getcoluk.c
+-	cextern/cfitsio/getkey.c
+-	cextern/cfitsio/group.c
+-	cextern/cfitsio/grparser.c
+-	cextern/cfitsio/histo.c
+-	cextern/cfitsio/imcompress.c
+-	cextern/cfitsio/infback.c
+-	cextern/cfitsio/inffast.c
+-	cextern/cfitsio/inflate.c
+-	cextern/cfitsio/inftrees.c
+-	cextern/cfitsio/iraffits.c
+-	cextern/cfitsio/modkey.c
+-	cextern/cfitsio/pliocomp.c
+-	cextern/cfitsio/putcolb.c
+-	cextern/cfitsio/putcol.c
+-	cextern/cfitsio/putcold.c
+-	cextern/cfitsio/putcole.c
+-	cextern/cfitsio/putcoli.c
+-	cextern/cfitsio/putcolj.c
+-	cextern/cfitsio/putcolk.c
+-	cextern/cfitsio/putcoll.c
+-	cextern/cfitsio/putcolsb.c
+-	cextern/cfitsio/putcols.c
+-	cextern/cfitsio/putcolu.c
+-	cextern/cfitsio/putcolui.c
+-	cextern/cfitsio/putcoluj.c
+-	cextern/cfitsio/putcoluk.c
+-	cextern/cfitsio/putkey.c
+-	cextern/cfitsio/quantize.c
+-	cextern/cfitsio/region.c
+-	cextern/cfitsio/ricecomp.c
+-	cextern/cfitsio/scalnull.c
+-	cextern/cfitsio/swapproc.c
+-	cextern/cfitsio/trees.c
+-	cextern/cfitsio/uncompr.c
+-	cextern/cfitsio/wcssub.c
+-	cextern/cfitsio/wcsutil.c
+-	cextern/cfitsio/zcompress.c
+-	cextern/cfitsio/zuncompress.c
+-	cextern/cfitsio/zutil.c
+-	src/compressionmodule.c
+-include_dirs = 
+-	numpy
+-	cextern/cfitsio
+-extra_compile_args = 
+-	-Wno-declaration-after-statement
+-	-Wno-unused-variable
+-	-Wno-parentheses
+-	-Wno-uninitialized
+-	-Wno-format
+-	-Wno-strict-prototypes
+-	-Wno-unused
+-	-Wno-comments
+-	-Wno-switch
+-optional = True
+-fail_message = 
+-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-	Failed to build PyFITS tile compression support.  PyFITS will still
+-	function, but without the ability to read or write compressed images.
+-	Please seek support from help@stsci.edu if you need this capability.
+-	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-
++#[extension=pyfits.compression]
++#sources = 
++#	src/compressionmodule.c
++#include_dirs = 
++#	numpy
++#extra_compile_args = 
++#	-Wno-declaration-after-statement
++#	-Wno-unused-variable
++#	-Wno-parentheses
++#	-Wno-uninitialized
++#	-Wno-format
++#	-Wno-strict-prototypes
++#	-Wno-unused
++#	-Wno-comments
++#	-Wno-switch
++#optional = True
++#fail_message = 
++#	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
++#	Failed to build PyFITS tile compression support.  PyFITS will still
++#	function, but without the ability to read or write compressed images.
++#	Please seek support from help@stsci.edu if you need this capability.
++#	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
++#
+ [global]
+ setup-hooks = 
+ 	stsci.distutils.hooks.version_setup_hook
+diff -u -p --recursive a/pyfits-3.3/setup.py b/pyfits-3.3/setup.py
+--- setup.py	2014-06-09 16:07:11.000000000 -0400
++++ setup.py	2015-07-05 20:46:43.071332734 -0400
+@@ -1,15 +1,41 @@
+ #!/usr/bin/env python
+ 
+ try:
+-    from setuptools import setup
++    from setuptools import setup, Extension
+ except ImportError:
+     from ez_setup import use_setuptools
+     use_setuptools()
+-    from setuptools import setup
++    from setuptools import setup, Extension
+ 
++import sys
++import subprocess
++
++
++PY3 = sys.version_info[0] == 3
++extra_compile_args = ['-Wall']
++extra_link_args = ['-lcfitsio']
++
++try:
++    if PY3:
++        extra_compile_args = subprocess.check_output(['pkg-config', '--cflags', 'cfitsio']).decode().split()
++        extra_link_args = subprocess.check_output(['pkg-config', '--libs', 'cfitsio']).decode().split()
++    else:
++        extra_compile_args = subprocess.check_output(['pkg-config', '--cflags', 'cfitsio']).split()
++        extra_link_args = subprocess.check_output(['pkg-config', '--libs', 'cfitsio']).split()
++except subprocess.CalledProcessError:
++    print('!!! pkg-config failure, skipping flag generation !!!')
++    pass
+ 
+ setup(
+     setup_requires=['d2to1>=0.2.5', 'stsci.distutils>=0.3'],
+     d2to1=True,
+-    zip_safe=False
++    use_2to3=True,
++    zip_safe=False,
++    ext_modules = [
++        Extension('pyfits.compression', ['src/compressionmodule.c'],
++                  include_dirs=['numpy'],
++                  extra_compile_args=extra_compile_args,
++                  extra_link_args=extra_link_args,
++                  optional=True)
++        ],
+ )
