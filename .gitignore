@@ -1,3 +1,4 @@
 .*project
 .index.json
 *.swp
+*.nfs*
